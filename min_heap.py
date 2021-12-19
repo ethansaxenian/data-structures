@@ -1,13 +1,26 @@
-from math import floor
+import operator
 import random
+from math import floor
+from typing import Union
 
 
-class MinHeap:
-    def __init__(self):
+class Heap:
+    OP_MAP = {
+        "<": operator.lt,
+        ">": operator.gt
+    }
+
+    def __init__(self, op: Union[str, callable] = operator.lt):
         self._array = []
+        if op not in ("<", ">", operator.lt, operator.gt):
+            raise ValueError("op must be one of '<', '>', 'operator.lt', 'operator.gt'")
+        self._op = self.OP_MAP.get(op, op)
 
     def __repr__(self):
-        return f"MinHeap({self._array})"
+        if self._op == operator.lt:
+            return f"MinHeap({self._array})"
+        if self._op == operator.gt:
+            return f"MaxHeap({self._array})"
 
     def __bool__(self):
         return bool(self._array)
@@ -45,26 +58,26 @@ class MinHeap:
     def _bubble_up(self, i):
         if i == 0:
             return
-        if self._array[i] < self._parent(i):
+        if self._op(self._array[i], self._parent(i)):
             self._swap(i, self._parent_index(i))
             self._bubble_up(self._parent_index(i))
 
     def _bubble_down(self, i):
-        smallest_index = i
+        swap_index = i
 
-        if self._lchild_index(i) < len(self._array) and self._lchild(i) < self._array[smallest_index]:
-            smallest_index = self._lchild_index(i)
+        if self._lchild_index(i) < len(self._array) and self._op(self._lchild(i), self._array[swap_index]):
+            swap_index = self._lchild_index(i)
 
-        if self._rchild_index(i) < len(self._array) and self._rchild(i) < self._array[smallest_index]:
-            smallest_index = self._rchild_index(i)
+        if self._rchild_index(i) < len(self._array) and self._op(self._rchild(i), self._array[swap_index]):
+            swap_index = self._rchild_index(i)
 
-        if smallest_index != i:
-            self._swap(i, smallest_index)
-            self._bubble_down(smallest_index)
+        if swap_index != i:
+            self._swap(i, swap_index)
+            self._bubble_down(swap_index)
 
     def heappush(self, item):
         self._array.append(item)
-        if item < self._parent(len(self._array) - 1):
+        if self._op(item, self._parent(len(self._array) - 1)):
             self._bubble_up(len(self._array) - 1)
 
     def heappop(self):
@@ -78,26 +91,23 @@ class MinHeap:
         return min_item
 
     def heappushpop(self, item):
-        if item < self._array[0]:
+        if self._op(item, self._array[0]):
             return item
 
-        min_item = self._array[0]
+        target_item = self._array[0]
         self._array[0] = item
         self._bubble_down(0)
-        return min_item
+        return target_item
 
     def heapreplace(self, item):
-        min_item = self._array[0]
+        target_item = self._array[0]
         self._array[0] = item
         self._bubble_down(0)
-        return min_item
-
-    def get_min(self):
-        return self._array[0]
+        return target_item
 
     @staticmethod
-    def heapsort(l):
-        h = MinHeap()
+    def heapsort(l, op: Union[str, callable]):
+        h = Heap(op=op)
         for i in l:
             h.heappush(i)
 
@@ -108,8 +118,8 @@ class MinHeap:
         return sorted_l
 
     @classmethod
-    def heapify(cls, l):
-        h = MinHeap()
+    def heapify(cls, l, op: Union[str, callable]):
+        h = Heap(op=op)
         h._array = l[:]
         for i in range(len(h) // 2, -1, -1):
             h._bubble_down(i)
