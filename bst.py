@@ -114,12 +114,3 @@ class BST:
         while curr.right is not None:
             curr = curr.right
         return curr
-
-
-if __name__ == '__main__':
-    t = BST()
-    for i in [5,3,8,7,9]:
-        t.insert(i)
-    t.inorder()
-
-

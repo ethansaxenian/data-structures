@@ -11,6 +11,7 @@ class LinkedList:
     def __init__(self, data: Optional[Iterable] = None):
         self.head = None
         self.tail = None
+        self._size = 0
         if data is not None:
             for item in data:
                 self.insert_back(item)
@@ -24,6 +25,21 @@ class LinkedList:
             yield curr.data
             curr = curr.next
 
+    def __len__(self):
+        return self._size
+
+    def __bool__(self):
+        return bool(self._size)
+
+    def __getitem__(self, i):
+        if i >= len(self):
+            raise IndexError
+
+        curr_node = self.head
+        for _ in range(i):
+            curr_node = curr_node.next
+        return curr_node.data
+
     def empty(self):
         return self.head is None
 
@@ -36,6 +52,8 @@ class LinkedList:
             new.next = self.head
             self.head = new
 
+        self._size += 1
+
     def insert_back(self, data):
         new = Node(data)
         if self.empty():
@@ -44,6 +62,8 @@ class LinkedList:
         else:
             self.tail.next = new
             self.tail = new
+
+        self._size += 1
 
     def print_list(self):
         curr = self.head
@@ -63,6 +83,7 @@ class LinkedList:
     def remove(self, data):
         if self.head.data == data:
             self.head = self.head.next
+            self._size -= 1
         else:
             curr = self.head
             while curr.next is not None:
@@ -72,6 +93,7 @@ class LinkedList:
                         self.tail.next = None
                     else:
                         curr.next = curr.next.next
+                    self._size -= 1
                     return
                 curr = curr.next
             raise ValueError('LinkedList.remove(x): x not in LinkedList')

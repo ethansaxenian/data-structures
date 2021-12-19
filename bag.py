@@ -60,8 +60,3 @@ class Bag:
 
     def conform(self, predicate: Callable[[Any], bool]) -> bool:
         return all(predicate(i) for i in self._data)
-
-
-if __name__ == '__main__':
-    b = Bag(range(1, 10, 2))
-    print(b)

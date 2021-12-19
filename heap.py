@@ -1,20 +1,20 @@
 import operator
-import random
 from math import floor
 from typing import Union
 
 
-class Heap:
-    OP_MAP = {
-        "<": operator.lt,
-        ">": operator.gt
-    }
+OP_MAP = {
+    "<": operator.lt,
+    ">": operator.gt
+}
 
+
+class Heap:
     def __init__(self, op: Union[str, callable] = operator.lt):
         self._array = []
         if op not in ("<", ">", operator.lt, operator.gt):
             raise ValueError("op must be one of '<', '>', 'operator.lt', 'operator.gt'")
-        self._op = self.OP_MAP.get(op, op)
+        self._op = OP_MAP.get(op, op)
 
     def __repr__(self):
         if self._op == operator.lt:
