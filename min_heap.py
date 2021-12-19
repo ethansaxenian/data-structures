@@ -1,7 +1,4 @@
-import heapq
-import time
 from math import floor
-from random import randint
 
 
 class MinHeap:
@@ -69,18 +66,3 @@ class MinHeap:
 
     def get_min(self):
         return self.array[0]
-
-
-if __name__ == '__main__':
-    start = time.time()
-    # h = MinHeap()
-    h = []
-    heapq.heapify(h)
-    for i in range(10):
-        heapq.heappush(h, randint(-1000000, 1000000))
-        # h.heappush(randint(-1000000, 1000000))
-    while len(h) > 0:
-        heapq.heappop()
-        # h.heappop()
-    end = time.time()
-    print(end - start)
