@@ -29,6 +29,15 @@ class HashTable:
     def __repr__(self):
         return f"HashTable({', '.join([str(n) for n in self.buckets if n is not None])})"
 
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, value):
+        self.insert(key, value)
+
+    def __delitem__(self, key):
+        self.remove(key)
+
     def hash_fn(self, key: Hashable) -> int:
         i = 7
         for c in str(key):
@@ -78,12 +87,3 @@ class HashTable:
             self.buckets[i] = curr_node.next
         else:
             prev.next = curr_node.next
-
-
-
-if __name__ == '__main__':
-    d = HashTable(a=1, b=2, c=3)
-    d.insert("d", 4)
-    print(d)
-    d.remove("b")
-    print(d)
